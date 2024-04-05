@@ -1,13 +1,7 @@
-import { useMemo, Dispatch } from "react";
-import { ActivityState, ActivityActions } from "../reducers/activityReducer";
+import { useActivity } from "../hooks/useActivity";
 
-type HeaderProps = {
-  state: ActivityState;
-  dispatch: Dispatch<ActivityActions>;
-};
-
-export default function Header({ state, dispatch }: HeaderProps) {
-  const isEmpty = useMemo(() => !state.activities.length, [state.activities]);
+export default function Header() {
+  const { dispatch, activitiesAreEmpty } = useActivity();
 
   const handleRestart = () => {
     const confirmCancel = window.confirm(
@@ -29,7 +23,7 @@ export default function Header({ state, dispatch }: HeaderProps) {
 
         <button
           className="bg-gray-800 hover:bg-gray-900 p-2 font-bold uppercase text-white cursor-pointer rounded-lg text-sm disabled:opacity-10"
-          disabled={isEmpty}
+          disabled={activitiesAreEmpty}
           onClick={handleRestart}
         >
           Reiniciar App
