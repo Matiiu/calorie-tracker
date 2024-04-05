@@ -1,14 +1,16 @@
-import type { Activity } from "../types";
+import type { Activity, Category } from "../types";
 
 export type ActivityActions =
   | { type: "save-activity"; payload: { newActivity: Activity } }
   | { type: "set-activeId"; payload: { id: Activity["id"] } }
   | { type: "delete-activity"; payload: { id: Activity["id"] } }
-  | { type: "restart-app" };
+  | { type: "restart-app" }
+  | { type: "get-category-to-filter"; payload: { category: Category["id"] } };
 
 export type ActivityState = {
   activities: Activity[];
   activeId: Activity["id"];
+  categoryToFilter: Category["id"];
 };
 
 function localStorageactivities(): Activity[] {
@@ -19,6 +21,7 @@ function localStorageactivities(): Activity[] {
 export const initialState: ActivityState = {
   activities: localStorageactivities(),
   activeId: "",
+  categoryToFilter: 0,
 };
 
 export function activityReducer(
@@ -64,6 +67,14 @@ export function activityReducer(
     return {
       activities: [],
       activeId: "",
+      categoryToFilter: 0,
+    };
+  }
+
+  if (action.type === "get-category-to-filter") {
+    return {
+      ...state,
+      categoryToFilter: action.payload.category,
     };
   }
 

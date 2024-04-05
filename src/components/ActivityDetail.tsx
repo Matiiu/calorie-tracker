@@ -20,7 +20,7 @@ export default function ActivityDetail({ activity }: ActivityDetailProps) {
   };
 
   return (
-    <div className="px-5 py-10 bg-white mt-5 flex justify-between">
+    <div className="px-5 py-10 bg-white shadow-lg rounded-lg mt-5 flex justify-between">
       <div className="space-y-2 relative">
         <p
           className={`absolute -top-8 -left-8 px-10 py-2 text-white uppercase font-bold ${

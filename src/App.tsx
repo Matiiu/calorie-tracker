@@ -5,9 +5,10 @@ import Header from "./components/Header";
 import Form from "./components/Form";
 import ActivityList from "./components/ActivityList";
 import CaloriesTracker from "./components/CaloriesTracker";
+import FilterByCategory from "./components/FilterByCategory";
 
 export default function App() {
-  const { state } = useActivity();
+  const { state, activitiesAreEmpty } = useActivity();
 
   useEffect(() => {
     localStorage.setItem("activities", JSON.stringify(state.activities));
@@ -31,6 +32,7 @@ export default function App() {
 
       <section className="py-10 bg-gray-100">
         <div className="max-w-4xl mx-auto">
+          {!activitiesAreEmpty && <FilterByCategory />}
           <ActivityList />
         </div>
       </section>
