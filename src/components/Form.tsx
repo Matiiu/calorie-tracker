@@ -1,16 +1,12 @@
-import { useState, ChangeEvent, FormEvent, Dispatch, useEffect } from "react";
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 
 import { categories } from "../data/categories";
-import type { Activity, Category } from "../types";
-import { ActivityActions, ActivityState } from "../reducers/activityReducer";
+import type { Activity } from "../types";
+import { useActivity } from "../hooks/useActivity";
 
-type FormProps = {
-  state: ActivityState;
-  dispatch: Dispatch<ActivityActions>;
-};
-
-export default function Form({ state, dispatch }: FormProps) {
+export default function Form() {
+  const { state, dispatch, categoryName } = useActivity();
   const initialState: Activity = {
     id: uuid(),
     category: 1,
@@ -18,29 +14,20 @@ export default function Form({ state, dispatch }: FormProps) {
     calories: 0,
   };
 
-  // Convertimos las calorías en un objeto donde el id en la llave y el nombre el valor
-  const categoriesObject = categories.reduce(
-    (accumulator: Record<Category["id"], Category["name"]>, current) => {
-      accumulator[current.id] = current.name;
-      return accumulator;
-    },
-    {}
-  );
-
   const [activity, setActivity] = useState<Activity>({ ...initialState });
 
   useEffect(() => {
     if (state.activeId) {
       const selectActivities: Activity = state.activities.filter(
-        stateActivity => stateActivity.id === state.activeId
+        (stateActivity) => stateActivity.id === state.activeId
       )[0];
       setActivity(selectActivities);
     }
   }, [state.activeId]);
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  type HandleChange = ChangeEvent<HTMLInputElement | HTMLSelectElement>;
+
+  const handleChange = (e: HandleChange) => {
     // Validamos si es un campo numérico
     const isNumberFiled = ["category", "calories"].includes(e.target.id);
     // Si lo es convertimos el dato a numérico
@@ -57,8 +44,8 @@ export default function Form({ state, dispatch }: FormProps) {
   };
 
   const nameSubmit = () => {
-    // Accedemos a la posición llave de nuestro objeto categoriesObject con el valor de activity.category y retornamos el valor
-    return `Guardar ${categoriesObject[activity.category]}`;
+    const action = state.activeId ? 'Editar' : 'Guardar';
+    return `${action} ${categoryName(activity.category)}`;
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
